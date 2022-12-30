@@ -5,3 +5,6 @@ compatibility_date = "2022-12-30"
 kv_namespaces = [
   { binding = "URLS", id = "e4536244fcb24272ba8c575597b59244", preview_id = "b125ba6bcf304de698f469e67de377d2" }
 ]
+
+[vars]
+CLIENT_ID = "26426284092-eaa28gpk14jnd3mv48uecf9314ncjdf9.apps.googleusercontent.com"

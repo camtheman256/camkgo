@@ -10,5 +10,10 @@
   "scripts": {
     "start": "wrangler dev",
     "deploy": "wrangler publish"
+  },
+  "dependencies": {
+    "@worker-tools/request-cookie-store": "^0.6.0-pre.3",
+    "@worker-tools/signed-cookie-store": "^0.3.0-pre.8",
+    "jose": "^4.11.1"
   }
 }
