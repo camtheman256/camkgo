@@ -63,9 +63,10 @@
         const response = await fetch("/api/auth", {
           method: "POST",
           body: JSON.stringify({ token: result.credential }),
+          credentials: "same-origin",
         });
         const message = await response.json();
-        console.log(message)
+        window.location.reload();
       }
     </script>
   </body>

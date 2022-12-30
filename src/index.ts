@@ -61,7 +61,10 @@ export default {
     const redirect = await env.URLS.get<UrlData>(shortName, "json");
     if (redirect) {
       if (redirect.owner !== undefined) {
-        return renderSignInTemplate();
+        const user = await signedCookieStore.get('user').catch(() => null);
+        if(user?.value !== redirect.owner) {
+          return renderSignInTemplate();
+        }
       }
       return Response.redirect(redirect.url);
     }
@@ -85,7 +88,7 @@ async function createAuthCookie(
     issuer: "https://accounts.google.com",
   });
   if (payload !== undefined) {
-    await cookieStore.set("user", payload.email);
+    await cookieStore.set({name: 'user', value: payload.email, path: '/'});
   }
   return payload;
 }
