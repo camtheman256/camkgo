@@ -1,0 +1,7 @@
+name = "camkgo"
+main = "src/index.ts"
+compatibility_date = "2022-12-30"
+
+kv_namespaces = [
+  { binding = "URLS", id = "e4536244fcb24272ba8c575597b59244", preview_id = "b125ba6bcf304de698f469e67de377d2" }
+]
