@@ -8,11 +8,14 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 import signin from "./signin.html";
+import home from "./index.html";
 import { SignedCookieStore } from "@worker-tools/signed-cookie-store";
 import { RequestCookieStore } from "@worker-tools/request-cookie-store";
 import { createRemoteJWKSet, importJWK, JWTPayload, jwtVerify } from "jose";
 
-const googleKeys = createRemoteJWKSet(new URL('https://www.googleapis.com/oauth2/v3/certs'))
+const googleKeys = createRemoteJWKSet(
+  new URL("https://www.googleapis.com/oauth2/v3/certs")
+);
 
 type UrlData = {
   url: string;
@@ -50,6 +53,23 @@ export default {
       await SignedCookieStore.deriveCryptoKey({ secret: env.COOKIE_KEY })
     );
     const { pathname } = new URL(request.url);
+    if (pathname === "/") {
+      if (request.method === "POST") {
+        const form = await request.formData();
+        const key = form.get("shortlink");
+        if (key !== null) {
+          const value: UrlData = {
+            url: form.get("url") ?? "http://example.com",
+          };
+          const owner = form.get("owner");
+          if (owner !== null && owner !== "") {
+            value.owner = owner;
+          }
+          await env.URLS.put(key, JSON.stringify(value));
+        }
+      }
+      return new Response(home, { headers: { "Content-Type": "text/html" } });
+    }
     if (pathname.startsWith("/api/auth")) {
       const payload = await createAuthCookie(request, signedCookieStore, env);
       return Response.json(
@@ -61,8 +81,8 @@ export default {
     const redirect = await env.URLS.get<UrlData>(shortName, "json");
     if (redirect) {
       if (redirect.owner !== undefined) {
-        const user = await signedCookieStore.get('user').catch(() => null);
-        if(user?.value !== redirect.owner) {
+        const user = await signedCookieStore.get("user").catch(() => null);
+        if (user?.value !== redirect.owner) {
           return renderSignInTemplate();
         }
       }
@@ -88,7 +108,7 @@ async function createAuthCookie(
     issuer: "https://accounts.google.com",
   });
   if (payload !== undefined) {
-    await cookieStore.set({name: 'user', value: payload.email, path: '/'});
+    await cookieStore.set({ name: "user", value: payload.email, path: "/" });
   }
   return payload;
 }
