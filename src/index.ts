@@ -31,7 +31,7 @@ export default {
   ): Promise<Response> {
     const { pathname } = new URL(request.url);
     const shortName = pathname.slice(1);
-    const redirect = await env.URLS.get(shortName, 'json') as UrlData;
+    const redirect = await env.URLS.get<UrlData>(shortName, 'json');
     if (redirect) {
       return Response.redirect(redirect.url);
     }
